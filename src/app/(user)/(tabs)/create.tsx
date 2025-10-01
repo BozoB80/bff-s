@@ -1,11 +1,9 @@
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "@/src/components";
 import { supabase } from "@/src/lib/supabase";
 
-const Profile = () => {
+const CreatePage = () => {
 	const router = useRouter();
 
 	useEffect(() => {
@@ -18,17 +16,13 @@ const Profile = () => {
 		checkAuth();
 	}, [router]);
 
-	const onSubmit = async () => {
-		await supabase.auth.signOut();
-	};
-
 	return (
-		<SafeAreaView>
-			<Button title="Odjava" onPress={onSubmit} />
-		</SafeAreaView>
+		<View>
+			<Text>CreatePage</Text>
+		</View>
 	);
 };
 
-export default Profile;
+export default CreatePage;
 
 const styles = StyleSheet.create({});

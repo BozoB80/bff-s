@@ -1,7 +1,7 @@
-import { theme } from "@/src/constants/theme";
 import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { theme } from "@/src/constants/theme";
 
 const TabsLayout = () => {
 	const insets = useSafeAreaInsets();
@@ -36,6 +36,15 @@ const TabsLayout = () => {
 					title: "",
 					tabBarIcon: ({ color, size }) => (
 						<Feather name="search" size={size} color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="create"
+				options={{
+					title: "",
+					tabBarIcon: ({ color, size }) => (
+						<Feather name="plus-circle" size={size} color={color} />
 					),
 				}}
 			/>
