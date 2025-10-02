@@ -1,11 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { toast } from "sonner-native";
 import { BackButton, Button, Input, ScreenWrapper } from "@/src/components";
 import { theme } from "@/src/constants/theme";
-import { supabase } from "@/src/lib/supabase";
 import { useLoginUser } from "@/src/queries/auth";
 
 const Login = () => {
@@ -13,13 +13,26 @@ const Login = () => {
 	const emailRef = useRef("");
 	const passwordRef = useRef("");
 
-	const { mutate: login, isPending } = useLoginUser(
-		emailRef.current,
-		passwordRef.current,
-	);
+	const { mutate: login, isPending } = useLoginUser(() => {
+		toast.success("Uspješna prijava!");
+	});
 
 	const onSubmit = async () => {
-		login();
+		if (!emailRef.current || !passwordRef.current) {
+			Alert.alert("Login", "Please fill all the fields");
+			return;
+		}
+
+		try {
+			await login({
+				email: emailRef.current.trim(),
+				password: passwordRef.current.trim(),
+			});
+		} catch (error) {
+			if (error instanceof Error) {
+				Alert.alert("Login Error", error.message);
+			}
+		}
 	};
 
 	return (

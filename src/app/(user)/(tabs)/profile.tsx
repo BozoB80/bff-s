@@ -1,6 +1,5 @@
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/src/components";
 import { supabase } from "@/src/lib/supabase";
@@ -8,23 +7,30 @@ import { supabase } from "@/src/lib/supabase";
 const Profile = () => {
 	const router = useRouter();
 
-	useEffect(() => {
-		const checkAuth = async () => {
-			const { data } = await supabase.auth.getSession();
-			if (!data.session) {
-				router.replace("/register");
-			}
-		};
-		checkAuth();
-	}, [router]);
+	const onLogout = async () => {
+		const { error } = await supabase.auth.signOut();
+		if (error) {
+			Alert.alert("Signout", "Error signing out");
+		}
+	};
 
-	const onSubmit = async () => {
-		await supabase.auth.signOut();
+	const handleLogout = async () => {
+		Alert.alert("Odjava", "Želite se odjaviti?", [
+			{
+				text: "Natrag",
+				style: "cancel",
+			},
+			{
+				text: "Odjava",
+				style: "destructive",
+				onPress: () => onLogout(),
+			},
+		]);
 	};
 
 	return (
 		<SafeAreaView>
-			<Button title="Odjava" onPress={onSubmit} />
+			<Button title="Odjava" onPress={handleLogout} />
 		</SafeAreaView>
 	);
 };
