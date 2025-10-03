@@ -21,7 +21,7 @@ const Input = (props: InputProps) => {
 			{props.icon && props.icon}
 			<TextInput
 				ref={props.inputRef && props.inputRef}
-				style={{ flex: 1 }}
+				style={{ flex: 1, height: props.multiline ? 100 : 50 }}
 				placeholderTextColor={theme.colors.neutral500}
 				{...props}
 			/>
@@ -34,7 +34,6 @@ export { Input };
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
-		height: 60,
 		alignItems: "center",
 		justifyContent: "center",
 		borderWidth: 0.4,

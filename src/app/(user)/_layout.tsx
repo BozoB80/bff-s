@@ -1,7 +1,4 @@
-import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
-import { supabase } from "@/src/lib/supabase";
-import { useAuth } from "@/src/providers";
+import { Stack } from "expo-router";
 
 const UserLayout = () => {
 	return (

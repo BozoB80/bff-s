@@ -4,7 +4,7 @@ import { supabase } from "@/src/lib/supabase";
 import { useAuth } from "@/src/providers";
 
 const AuthLayout = () => {
-	const { setAuth, user } = useAuth();
+	const { setAuth } = useAuth();
 	const router = useRouter();
 
 	useEffect(() => {
@@ -19,7 +19,6 @@ const AuthLayout = () => {
 		});
 	}, []);
 
-	console.log(user);
 	return (
 		<Stack>
 			<Stack.Screen name="login" options={{ headerShown: false }} />

@@ -4,14 +4,13 @@ import { Pressable, StyleSheet } from "react-native";
 import { theme } from "../constants/theme";
 
 type BackButtonProps = {
-	size?: number;
 	router?: Router;
 };
 
-const BackButton = ({ size = 26, router }: BackButtonProps) => {
+const BackButton = ({ router }: BackButtonProps) => {
 	return (
 		<Pressable onPress={() => router?.back()} style={styles.button}>
-			<Feather name="arrow-left" size={26} />
+			<Feather name="arrow-left" size={26} color={theme.colors.primaryLight} />
 		</Pressable>
 	);
 };
@@ -23,6 +22,6 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-start",
 		padding: 5,
 		borderRadius: theme.radius.sm,
-		backgroundColor: "rgba(0,0,0,0.07)",
+		backgroundColor: "transparent",
 	},
 });
