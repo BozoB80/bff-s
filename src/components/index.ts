@@ -3,5 +3,7 @@ export * from "./Button";
 export * from "./Header";
 export * from "./Input";
 export * from "./Loading";
+export * from "./NativeSheet";
 export * from "./ScreenWrapper";
+export * from "./Select";
 export * from "./SupabaseImage";

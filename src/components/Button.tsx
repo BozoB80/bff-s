@@ -17,6 +17,7 @@ type ButtonProps = {
 	textStyle?: StyleProp<TextStyle>;
 	loading?: boolean;
 	hasShadow?: boolean;
+	disabled?: boolean;
 };
 
 const Button = ({
@@ -26,6 +27,7 @@ const Button = ({
 	textStyle,
 	loading = false,
 	hasShadow = false,
+	disabled = false,
 }: ButtonProps) => {
 	const shadow = {
 		shadowColor: theme.colors.dark,
@@ -49,7 +51,13 @@ const Button = ({
 	return (
 		<Pressable
 			onPress={onPress}
-			style={[styles.button, buttonStyle, hasShadow && shadow]}
+			disabled={disabled}
+			style={[
+				styles.button,
+				buttonStyle,
+				hasShadow && shadow,
+				disabled && { opacity: 0.6 },
+			]}
 		>
 			<Text style={[styles.text, textStyle]}>{title}</Text>
 		</Pressable>
@@ -64,7 +72,7 @@ const styles = StyleSheet.create({
 		height: 46,
 		justifyContent: "center",
 		alignItems: "center",
-		borderRadius: theme.radius.xl,
+		borderRadius: theme.radius.lg,
 	},
 	text: {
 		fontSize: 22,

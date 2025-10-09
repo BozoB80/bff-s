@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string
+          id: number
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string | null
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          categoryId: number | null
+          created_at: string
+          description: string | null
+          id: number
+          image: string | null
+          title: string | null
+          userId: string | null
+        }
+        Insert: {
+          categoryId?: number | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          image?: string | null
+          title?: string | null
+          userId?: string | null
+        }
+        Update: {
+          categoryId?: number | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          image?: string | null
+          title?: string | null
+          userId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_categoryId_fkey"
+            columns: ["categoryId"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           address: string | null

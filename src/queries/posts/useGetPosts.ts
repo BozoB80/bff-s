@@ -2,14 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
 import type { Tables } from "@/src/types/database.types";
 
-const useGetCategories = () => {
-	return useQuery<Tables<"categories">[]>({
-		queryKey: ["categories"],
+const useGetPosts = () => {
+	return useQuery<Tables<"posts">[]>({
+		queryKey: ["posts"],
 		queryFn: async () => {
-			const { data, error } = await supabase
-				.from("categories")
-				.select("*")
-				.order("name", { ascending: true });
+			const { data, error } = await supabase.from("posts").select("*");
 
 			if (error) {
 				throw new Error(error.message);
@@ -21,4 +18,4 @@ const useGetCategories = () => {
 	});
 };
 
-export { useGetCategories };
+export { useGetPosts };
