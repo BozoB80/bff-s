@@ -1,8 +1,8 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import type { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { useRef } from "react";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { theme } from "../constants/theme";
 import { NativeSheet } from "./NativeSheet";
 
@@ -11,7 +11,9 @@ interface SelectProps {
 	placeholder: string;
 	onPress?: () => void;
 	onChange?: (value: string | number) => void;
-	options: { id: number; name: string }[];
+	options: { id: number; name: string; icon?: string }[];
+	title?: string;
+	description?: string;
 }
 
 const Select = ({
@@ -20,6 +22,8 @@ const Select = ({
 	onPress,
 	onChange,
 	options,
+	title,
+	description,
 }: SelectProps) => {
 	const sheetRef = useRef<TrueSheet>(null);
 
@@ -37,27 +41,46 @@ const Select = ({
 	return (
 		<>
 			<Pressable onPress={onPress || handleOpenModal} style={styles.container}>
-				<Text style={[styles.text, !value && styles.placeholder]}>
-					{options.find((opt) => opt.id === value)?.name || placeholder}
-				</Text>
+				<View style={styles.textContainer}>
+					{value && options.find((opt) => opt.id === value)?.icon && (
+						<Feather
+							name={
+								options.find((opt) => opt.id === value)
+									?.icon as keyof typeof Feather.glyphMap
+							}
+							size={16}
+							color={theme.colors.text}
+						/>
+					)}
+					<Text style={[styles.text, !value && styles.placeholder]}>
+						{options.find((opt) => opt.id === value)?.name || placeholder}
+					</Text>
+				</View>
 				<Ionicons name="chevron-forward" size={20} color={theme.colors.text} />
 			</Pressable>
 
 			<NativeSheet
 				ref={sheetRef}
-				title="Select Option"
-				description="Choose an option from the list"
+				title={title}
+				description={description}
 				disableBackAction={true}
 			>
 				<FlashList
 					data={options}
 					renderItem={({ item }) => (
-						<Text
+						<Pressable
 							onPress={() => handleSelectOption(item)}
-							style={styles.option}
+							style={styles.optionPressable}
 						>
-							{item.name}
-						</Text>
+							{item.icon && (
+								<Feather
+									name={item.icon as keyof typeof Feather.glyphMap}
+									size={16}
+									color={theme.colors.white}
+								/>
+							)}
+							<Text style={styles.optionText}>{item.name}</Text>
+						</Pressable>
 					)}
 					contentContainerStyle={styles.contentStyle}
 					masonry
@@ -88,6 +111,12 @@ const styles = StyleSheet.create({
 		color: theme.colors.text,
 		flex: 1,
 	},
+	textContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		flex: 1,
+		gap: 8,
+	},
 	placeholder: {
 		color: theme.colors.neutral500,
 	},
@@ -103,5 +132,18 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		margin: 4,
+	},
+	optionPressable: {
+		backgroundColor: theme.colors.primary,
+		borderRadius: theme.radius.sm,
+		paddingVertical: 6,
+		paddingHorizontal: 12,
+		margin: 4,
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 8,
+	},
+	optionText: {
+		color: theme.colors.white,
 	},
 });

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import z from "zod";
 import { Button, Header, Input, SupabaseImage } from "@/src/components";
 import { theme } from "@/src/constants/theme";
@@ -20,18 +20,30 @@ const Profile = () => {
 	const { mutate: updateUser, isPending } = useUpdateUser(user?.id ?? "");
 
 	const [localImage, setLocalImage] = useState<string | null>(null);
+	const [localAvatar, setLocalAvatar] = useState<string | null>(null);
 
-	const pickImage = async () => {
+	const pickBackgroundImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ["images"],
 			allowsEditing: true,
 			quality: 1,
 		});
 
-		console.log(result);
-
 		if (!result.canceled) {
 			setLocalImage(result.assets[0].uri);
+		}
+	};
+
+	const pickAvatar = async () => {
+		const result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ["images"],
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1,
+		});
+
+		if (!result.canceled) {
+			setLocalAvatar(result.assets[0].uri);
 		}
 	};
 
@@ -60,6 +72,7 @@ const Profile = () => {
 		id: z.string().optional(),
 		created_at: z.string().optional(),
 		image: z.string().nullable().optional(),
+		avatar: z.string().nullable().optional(),
 		name: z.string().nullable().optional(),
 		bio: z.string().nullable().optional(),
 		address: z.string().nullable().optional(),
@@ -77,10 +90,17 @@ const Profile = () => {
 
 	const onSubmit = async (value: TablesUpdate<"users">) => {
 		let imagePath = value.image;
+		let avatarPath = value.avatar;
+
 		if (localImage) {
-			imagePath = await uploadImage(localImage, supabase);
+			imagePath = await uploadImage(localImage, supabase, "images");
 		}
-		updateUser({ ...value, image: imagePath });
+
+		if (localAvatar) {
+			avatarPath = await uploadImage(localAvatar, supabase, "avatars");
+		}
+
+		updateUser({ ...value, image: imagePath, avatar: avatarPath });
 	};
 
 	return (
@@ -97,23 +117,71 @@ const Profile = () => {
 				}
 			/>
 			<View style={styles.container}>
-				<Pressable onPress={pickImage}>
-					{userData?.image ? (
-						<SupabaseImage
-							path={userData.image}
-							style={{ width: "100%", height: 200, borderRadius: 10 }}
-						/>
-					) : (
-						<View style={styles.imageUpload}>
-							<Text>Tap to upload profile image</Text>
-						</View>
+				{/* Avatar Section */}
+				<View style={styles.avatarContainer}>
+					<View style={styles.avatarWrapper}>
+						{localAvatar ? (
+							<View style={styles.avatarRelative}>
+								<Image source={{ uri: localAvatar }} style={styles.avatar} />
+								<Pressable onPress={pickAvatar} style={styles.avatarEditButton}>
+									<Feather name="plus" size={20} color="white" />
+								</Pressable>
+							</View>
+						) : userData?.avatar ? (
+							<View style={styles.avatarRelative}>
+								<SupabaseImage
+									path={userData.avatar}
+									bucket="avatars"
+									style={styles.avatar}
+								/>
+								<Pressable onPress={pickAvatar} style={styles.avatarEditButton}>
+									<Feather name="plus" size={20} color="white" />
+								</Pressable>
+							</View>
+						) : (
+							<Pressable onPress={pickAvatar} style={styles.avatarPlaceholder}>
+								<Feather name="plus" size={20} color="white" />
+							</Pressable>
+						)}
+					</View>
+					{!(userData?.avatar || localAvatar) && (
+						<Text style={styles.avatarText}>Profilna slika</Text>
 					)}
-				</Pressable>
+				</View>
+
+				{/* Background Image Section */}
+				<View style={styles.backgroundImageContainer}>
+					{userData?.image || localImage ? (
+						<View style={styles.imageContainer}>
+							{localImage ? (
+								<Image
+									source={{ uri: localImage }}
+									style={styles.backgroundImage}
+								/>
+							) : userData?.image ? (
+								<SupabaseImage
+									path={userData.image}
+									style={styles.backgroundImage}
+								/>
+							) : null}
+							<Pressable
+								onPress={pickBackgroundImage}
+								style={styles.editImageButton}
+							>
+								<Feather name="plus" size={20} color="white" />
+							</Pressable>
+						</View>
+					) : (
+						<Pressable onPress={pickBackgroundImage} style={styles.imageUpload}>
+							<Text>Postavite pozadinsku sliku</Text>
+						</Pressable>
+					)}
+				</View>
 				<Controller
 					name="name"
 					control={control}
 					render={({ field }) => (
-						<View>
+						<View style={styles.userInput}>
 							<Text>Korisničko ime</Text>
 							<Input
 								placeholder="Vaše ime"
@@ -178,6 +246,90 @@ const styles = StyleSheet.create({
 		gap: 16,
 		padding: 16,
 	},
+	avatarContainer: {
+		position: "absolute",
+		top: 160,
+		left: 50,
+		zIndex: 10,
+	},
+	avatarWrapper: {
+		marginBottom: 8,
+	},
+	avatar: {
+		width: 100,
+		height: 100,
+		borderRadius: 50,
+		backgroundColor: "white",
+	},
+	avatarPlaceholder: {
+		width: 100,
+		height: 100,
+		borderRadius: 50,
+		backgroundColor: "#f0f0f0",
+		justifyContent: "center",
+		alignItems: "center",
+		borderWidth: 2,
+		borderColor: theme.colors.primary,
+		borderStyle: "dashed",
+	},
+	avatarText: {
+		fontSize: 14,
+		color: theme.colors.text,
+		fontWeight: "500",
+	},
+	avatarRelative: {
+		position: "relative",
+	},
+	avatarEditButton: {
+		position: "absolute",
+		bottom: 0,
+		right: -10,
+		backgroundColor: theme.colors.primary,
+		width: 36,
+		height: 36,
+		borderRadius: 18,
+		justifyContent: "center",
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+	},
+	backgroundImageContainer: {
+		marginBottom: 16,
+		position: "relative",
+	},
+	imageContainer: {
+		position: "relative",
+	},
+	backgroundImage: {
+		width: "100%",
+		height: 200,
+		borderRadius: 10,
+	},
+	editImageButton: {
+		position: "absolute",
+		bottom: 12,
+		right: 12,
+		backgroundColor: theme.colors.primary,
+		width: 36,
+		height: 36,
+		borderRadius: 18,
+		justifyContent: "center",
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+	},
 	imageUpload: {
 		width: "100%",
 		height: 200,
@@ -185,5 +337,8 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		justifyContent: "center",
 		alignItems: "center",
+	},
+	userInput: {
+		marginTop: 25,
 	},
 });

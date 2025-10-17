@@ -4,6 +4,7 @@ export * from "./Header";
 export * from "./Input";
 export * from "./Loading";
 export * from "./NativeSheet";
+export * from "./posts";
 export * from "./ScreenWrapper";
 export * from "./Select";
 export * from "./SupabaseImage";

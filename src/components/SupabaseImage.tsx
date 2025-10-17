@@ -1,26 +1,31 @@
-import { type ComponentProps, useEffect, useState } from "react";
+import { type ComponentProps, useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Image, View } from "react-native";
 import { supabase } from "../lib/supabase";
 import { downloadImage } from "../utils/supabaseImages";
 
 type SupabaseImageProps = {
 	path: string;
+	bucket?: string;
 } & ComponentProps<typeof Image>;
 
-const SupabaseImage = ({ path, ...imageProps }: SupabaseImageProps) => {
+const SupabaseImage = ({
+	path,
+	bucket = "images",
+	...imageProps
+}: SupabaseImageProps) => {
 	const [image, setImage] = useState<string>();
 	const [isLoading, setIsLoading] = useState(true);
 
-	const handleDownload = async () => {
+	const handleDownload = useCallback(async () => {
 		try {
-			const result = await downloadImage(path, supabase);
-			setImage(result);
+			const result = await downloadImage(path, supabase, bucket);
+			setImage(result as string);
 		} catch (error) {
 			console.error("Error downloading image:", error);
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [path, bucket]);
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -29,7 +34,7 @@ const SupabaseImage = ({ path, ...imageProps }: SupabaseImageProps) => {
 		} else {
 			setIsLoading(false);
 		}
-	}, [path]);
+	}, [path, handleDownload]);
 
 	if (isLoading) {
 		return (

@@ -1,0 +1,1 @@
+export { newEmotionIcons } from "./newEmotionIcons";

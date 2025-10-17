@@ -3,7 +3,7 @@ import { supabase } from "@/src/lib/supabase";
 
 const useGetUser = (userId: string) => {
 	return useQuery({
-		queryKey: ["user"],
+		queryKey: ["user", userId],
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("users")

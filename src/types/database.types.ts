@@ -32,11 +32,30 @@ export type Database = {
         }
         Relationships: []
       }
+      emotions: {
+        Row: {
+          created_at: string
+          id: number
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          title?: string | null
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           categoryId: number | null
           created_at: string
           description: string | null
+          emotionId: number | null
           id: number
           image: string | null
           title: string | null
@@ -46,6 +65,7 @@ export type Database = {
           categoryId?: number | null
           created_at?: string
           description?: string | null
+          emotionId?: number | null
           id?: number
           image?: string | null
           title?: string | null
@@ -55,6 +75,7 @@ export type Database = {
           categoryId?: number | null
           created_at?: string
           description?: string | null
+          emotionId?: number | null
           id?: number
           image?: string | null
           title?: string | null
@@ -69,6 +90,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "posts_emotionId_fkey"
+            columns: ["emotionId"]
+            isOneToOne: false
+            referencedRelation: "emotions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "posts_userId_fkey"
             columns: ["userId"]
             isOneToOne: false
@@ -80,6 +108,7 @@ export type Database = {
       users: {
         Row: {
           address: string | null
+          avatar: string | null
           bio: string | null
           created_at: string
           id: string
@@ -88,6 +117,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          avatar?: string | null
           bio?: string | null
           created_at?: string
           id?: string
@@ -96,6 +126,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          avatar?: string | null
           bio?: string | null
           created_at?: string
           id?: string

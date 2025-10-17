@@ -1,8 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
 import type { TablesInsert } from "../../types/database.types";
 
-const useCreatePost = (onSuccess: () => void) => {
+const useCreatePost = (handleOnSuccess: () => void) => {
+	const queryClient = useQueryClient();
+
 	return useMutation({
 		mutationFn: async (body: TablesInsert<"posts">) => {
 			const { data, error } = await supabase
@@ -16,7 +18,10 @@ const useCreatePost = (onSuccess: () => void) => {
 
 			return data;
 		},
-		onSuccess,
+		onSuccess: () => {
+			handleOnSuccess();
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+		},
 	});
 };
 
