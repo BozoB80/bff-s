@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import {
 	Pressable,
 	type StyleProp,
@@ -10,6 +11,48 @@ import {
 import { theme } from "../constants/theme";
 import Loading from "./Loading";
 
+type FeatherIconName = keyof typeof Feather.glyphMap;
+
+const getVariantStyles = (variant: ButtonProps["variant"]) => {
+	switch (variant) {
+		case "outline":
+			return {
+				button: {
+					backgroundColor: "transparent",
+					borderWidth: 1,
+					borderColor: theme.colors.dark,
+				},
+				text: {
+					color: theme.colors.dark,
+				},
+			};
+		case "secondary":
+			return {
+				button: {
+					backgroundColor: theme.colors.neutral200,
+				},
+				text: {
+					color: theme.colors.dark,
+				},
+			};
+		case "icon":
+			return {
+				button: {
+					height: 40,
+					width: 40,
+				},
+				text: {
+					fontSize: 18,
+				},
+			};
+		default: // default
+			return {
+				button: {},
+				text: {},
+			};
+	}
+};
+
 type ButtonProps = {
 	title: string;
 	onPress: () => void;
@@ -18,6 +61,8 @@ type ButtonProps = {
 	loading?: boolean;
 	hasShadow?: boolean;
 	disabled?: boolean;
+	variant?: "default" | "outline" | "secondary" | "icon";
+	iconName?: FeatherIconName;
 };
 
 const Button = ({
@@ -28,6 +73,8 @@ const Button = ({
 	loading = false,
 	hasShadow = false,
 	disabled = false,
+	variant = "default",
+	iconName,
 }: ButtonProps) => {
 	const shadow = {
 		shadowColor: theme.colors.dark,
@@ -40,9 +87,19 @@ const Button = ({
 		elevation: 4,
 	};
 
+	const variantStyles = getVariantStyles(variant);
+	const textColor = variantStyles.text.color || theme.colors.white;
+
 	if (loading) {
 		return (
-			<View style={[styles.button, buttonStyle, { backgroundColor: "white" }]}>
+			<View
+				style={[
+					styles.button,
+					variantStyles.button,
+					buttonStyle,
+					{ backgroundColor: "white" },
+				]}
+			>
 				<Loading />
 			</View>
 		);
@@ -54,12 +111,29 @@ const Button = ({
 			disabled={disabled}
 			style={[
 				styles.button,
+				variantStyles.button,
 				buttonStyle,
 				hasShadow && shadow,
 				disabled && { opacity: 0.6 },
 			]}
 		>
-			<Text style={[styles.text, textStyle]}>{title}</Text>
+			{variant === "icon" ? (
+				<Feather name={iconName || "circle"} size={20} color={textColor} />
+			) : (
+				<View style={{ flexDirection: "row", alignItems: "center" }}>
+					{iconName && (
+						<Feather
+							name={iconName}
+							size={20}
+							color={textColor}
+							style={{ marginRight: 8 }}
+						/>
+					)}
+					<Text style={[styles.text, variantStyles.text, textStyle]}>
+						{title}
+					</Text>
+				</View>
+			)}
 		</Pressable>
 	);
 };

@@ -56,6 +56,7 @@ export type Database = {
           created_at: string
           description: string | null
           emotionId: number | null
+          emotionName: string | null
           id: number
           image: string | null
           title: string | null
@@ -66,6 +67,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           emotionId?: number | null
+          emotionName?: string | null
           id?: number
           image?: string | null
           title?: string | null
@@ -76,6 +78,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           emotionId?: number | null
+          emotionName?: string | null
           id?: number
           image?: string | null
           title?: string | null
@@ -95,6 +98,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "emotions"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_emotionName_fkey"
+            columns: ["emotionName"]
+            isOneToOne: false
+            referencedRelation: "emotions"
+            referencedColumns: ["title"]
           },
           {
             foreignKeyName: "posts_userId_fkey"

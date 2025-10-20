@@ -14,6 +14,7 @@ interface SelectProps {
 	options: { id: number; name: string; icon?: string }[];
 	title?: string;
 	description?: string;
+	useColorGroups?: boolean;
 }
 
 const Select = ({
@@ -24,6 +25,7 @@ const Select = ({
 	options,
 	title,
 	description,
+	useColorGroups = false,
 }: SelectProps) => {
 	const sheetRef = useRef<TrueSheet>(null);
 
@@ -36,6 +38,18 @@ const Select = ({
 			onChange(option.id);
 		}
 		await sheetRef.current?.dismiss();
+	};
+
+	const getBackgroundColor = (index: number) => {
+		if (!useColorGroups) {
+			return theme.colors.primary;
+		}
+		const colors = [
+			theme.colors.primary,
+			theme.colors.orange,
+			theme.colors.green,
+		];
+		return colors[Math.floor(index / 4) % colors.length];
 	};
 
 	return (
@@ -67,10 +81,13 @@ const Select = ({
 			>
 				<FlashList
 					data={options}
-					renderItem={({ item }) => (
+					renderItem={({ item, index }) => (
 						<Pressable
 							onPress={() => handleSelectOption(item)}
-							style={styles.optionPressable}
+							style={[
+								styles.optionPressable,
+								{ backgroundColor: getBackgroundColor(index) },
+							]}
 						>
 							{item.icon && (
 								<Feather

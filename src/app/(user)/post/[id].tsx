@@ -1,22 +1,29 @@
 import { Feather } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { toast } from "sonner-native";
 import z from "zod";
-import { Button, Header, Input, Select, SupabaseImage } from "@/src/components";
+import {
+	Button,
+	Input,
+	ScreenWrapper,
+	Select,
+	SupabaseImage,
+} from "@/src/components";
 import { theme } from "@/src/constants/theme";
 import { useImagePicker } from "@/src/hooks";
 import { newEmotionIcons } from "@/src/mappers";
 import { useAuth } from "@/src/providers";
 import {
-	useCreatePost,
 	useGetCategories,
 	useGetEmotions,
+	useGetPostById,
+	useUpdatePost,
 } from "@/src/queries/posts";
 
-const createPostSchema = z.object({
+const editPostSchema = z.object({
 	categoryId: z.number().optional(),
 	image: z.string().optional(),
 	title: z.string().optional(),
@@ -25,63 +32,53 @@ const createPostSchema = z.object({
 	emotionName: z.string().optional(),
 });
 
-const CreatePage = () => {
-	const router = useRouter();
+const EditPost = () => {
+	const { id } = useLocalSearchParams<{ id: string }>();
+
+	const { user } = useAuth();
+	const { data: post } = useGetPostById(Number(id));
+	const { data: categories } = useGetCategories();
+	const { data: emotions } = useGetEmotions();
+	const { mutate: updatePost, isPending } = useUpdatePost(() => {
+		toast.success("Objava uspješno ažurirana");
+		router.back();
+	});
+
 	const {
 		pickImage,
 		uploading,
 		imagePath,
-		reset: resetImage,
-	} = useImagePicker();
-
-	const { user } = useAuth();
-	const { data: categories } = useGetCategories();
-	const { data: emotions } = useGetEmotions();
-	const { mutate: createPost, isPending } = useCreatePost(() => {
-		toast.success("Objava uspješno kreirana");
-		reset();
-		resetImage();
-		router.replace("/(user)/(tabs)");
-	});
+		hasChanged: imageChanged,
+	} = useImagePicker(post?.image);
 
 	const {
 		control,
 		handleSubmit,
-		reset,
 		formState: { isDirty },
-	} = useForm<z.infer<typeof createPostSchema>>({
-		resolver: zodResolver(createPostSchema),
-		defaultValues: {
-			title: "",
-			description: "",
-			image: "",
-			categoryId: undefined,
-			emotionId: undefined,
-			emotionName: undefined,
-		},
+	} = useForm<z.infer<typeof editPostSchema>>({
+		resolver: zodResolver(editPostSchema),
+		values: post,
 	});
 
-	const onSubmit: SubmitHandler<z.infer<typeof createPostSchema>> = (data) => {
-		createPost({
-			title: data.title ?? "",
-			description: data.description ?? "",
-			image: imagePath ?? "",
-			categoryId: data?.categoryId ?? null,
-			emotionId: data?.emotionId ?? null,
-			userId: user?.id,
-			emotionName:
-				emotions?.find((e) => e.id === data.emotionId)?.title ?? null,
+	const onSubmit: SubmitHandler<z.infer<typeof editPostSchema>> = (data) => {
+		updatePost({
+			postId: Number(id),
+			postDetails: {
+				...data,
+				userId: user?.id,
+				image: imagePath,
+				emotionName:
+					emotions?.find((e) => e.id === data.emotionId)?.title ?? null,
+			},
 		});
 	};
 
 	return (
-		<View>
-			<Header />
-			<Text style={styles.post}>Kreiraj objavu</Text>
+		<ScreenWrapper showPattern bgOpacity={0.2}>
 			<View style={styles.container}>
 				<Controller
-					name={"categoryId"}
 					control={control}
+					name="categoryId"
 					render={({ field: { onChange, value } }) => (
 						<View>
 							<Text>Kategorija</Text>
@@ -133,7 +130,6 @@ const CreatePage = () => {
 								}))}
 								title="Emocije"
 								description="Izrazite osjećaje povezane s vašom objavom"
-								useColorGroups
 							/>
 						</View>
 					)}
@@ -169,29 +165,27 @@ const CreatePage = () => {
 					)}
 				/>
 				<Button
-					title="Objavi"
-					loading={isPending}
-					disabled={!isDirty || isPending}
-					hasShadow
+					title="Ažuriraj objavu"
 					onPress={handleSubmit(onSubmit)}
+					loading={isPending}
+					disabled={!isDirty && !imageChanged}
 				/>
 			</View>
-		</View>
+		</ScreenWrapper>
 	);
 };
 
-export default CreatePage;
+export default EditPost;
 
 const styles = StyleSheet.create({
 	container: {
 		padding: 16,
 		gap: 16,
 	},
-	post: {
+	title: {
+		fontSize: 24,
+		fontWeight: "bold",
 		textAlign: "center",
-		fontSize: 36,
-		fontWeight: theme.fonts.bold,
-		paddingVertical: 12,
 	},
 	imageUpload: {
 		width: "100%",

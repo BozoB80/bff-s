@@ -80,10 +80,11 @@ const NativeSheet = ({
 const styles = StyleSheet.create({
 	content: {
 		padding: 10,
-		gap: 4,
+		gap: 8,
 		position: "relative",
 		flexGrow: 1,
 		backgroundColor: theme.colors.neutral200,
+		minHeight: 300,
 	},
 	title: {
 		fontSize: 24,

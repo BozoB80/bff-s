@@ -33,6 +33,8 @@ export const theme = {
 		neutral700: "#44403c",
 		neutral800: "#292524",
 		neutral900: "#1c1917",
+		orange: "#f97316",
+		green: "#22c55e",
 	},
 	fonts: {
 		medlum: "500" as FontWeight,

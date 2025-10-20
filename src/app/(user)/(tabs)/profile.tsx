@@ -135,18 +135,18 @@ const Profile = () => {
 									style={styles.avatar}
 								/>
 								<Pressable onPress={pickAvatar} style={styles.avatarEditButton}>
-									<Feather name="plus" size={20} color="white" />
+									<Feather name="plus" size={20} color="black" />
 								</Pressable>
 							</View>
 						) : (
 							<Pressable onPress={pickAvatar} style={styles.avatarPlaceholder}>
-								<Feather name="plus" size={20} color="white" />
+								<Feather name="plus" size={20} color="black" />
+								{!(userData?.avatar || localAvatar) && (
+									<Text style={styles.avatarText}>Profilna slika</Text>
+								)}
 							</Pressable>
 						)}
 					</View>
-					{!(userData?.avatar || localAvatar) && (
-						<Text style={styles.avatarText}>Profilna slika</Text>
-					)}
 				</View>
 
 				{/* Background Image Section */}
@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: theme.colors.text,
 		fontWeight: "500",
+		zIndex: 100,
 	},
 	avatarRelative: {
 		position: "relative",
@@ -334,6 +335,8 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: 200,
 		backgroundColor: "#f0f0f0",
+		borderWidth: 1,
+		borderColor: theme.colors.dark,
 		borderRadius: 10,
 		justifyContent: "center",
 		alignItems: "center",

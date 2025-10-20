@@ -9,20 +9,11 @@ const Home = () => {
 	useRefreshOnFocus(refetch);
 
 	return (
-		<View>
+		<View style={{ flex: 1 }}>
 			<Header />
 			<FlatList
 				data={posts}
-				renderItem={({ item }) => (
-					<Post
-						key={item.id}
-						image={item.image ?? ""}
-						title={item.title ?? ""}
-						description={item.description ?? ""}
-						userId={item.userId ?? ""}
-						createdAt={item.created_at ?? undefined}
-					/>
-				)}
+				renderItem={({ item }) => <Post key={item.id} postId={item.id} />}
 				contentContainerStyle={{ gap: 4 }}
 				ListEmptyComponent={() => <Text>Nema objava</Text>}
 			/>

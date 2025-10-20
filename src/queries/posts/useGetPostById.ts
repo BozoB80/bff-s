@@ -3,7 +3,7 @@ import { supabase } from "@/src/lib/supabase";
 
 const useGetPostById = (postId: number) => {
 	return useQuery({
-		queryKey: ["postById"],
+		queryKey: ["postById", postId],
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("posts")
