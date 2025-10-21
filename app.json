@@ -1,42 +1,51 @@
 {
-	"expo": {
-		"name": "bffs",
-		"slug": "bffs",
-		"scheme": "bffs-scheme",
-		"version": "1.0.0",
-		"orientation": "portrait",
-		"icon": "./assets/images/icon.png",
-		"userInterfaceStyle": "light",
-		"newArchEnabled": true,
-		"splash": {
-			"image": "./assets/images/logo.png",
-			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
-		},
-		"ios": {
-			"supportsTablet": true,
-			"bundleIdentifier": "com.anonymous.bffs"
-		},
-		"android": {
-			"adaptiveIcon": {
-				"foregroundImage": "./assets/images/logo.png",
-				"backgroundColor": "#ffffff"
-			},
-			"edgeToEdgeEnabled": true,
-			"predictiveBackGestureEnabled": false,
-			"package": "com.anonymous.bffs"
-		},
-		"web": {
-			"favicon": "./assets/images/favicon.png"
-		},
-		"plugins": [
-			"expo-router",
-			[
-				"expo-image-picker",
-				{
-					"photosPermission": "The app accesses your photos to let you share them with your friends."
-				}
-			]
-		]
-	}
+  "expo": {
+    "name": "bffs",
+    "slug": "bffs",
+    "scheme": "bffs-scheme",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.bffs"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.bffs",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3aeb575d-897d-4aca-a77e-3b26711bd0f4"
+      }
+    }
+  }
 }
