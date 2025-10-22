@@ -2,7 +2,15 @@ import { Feather } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router, useLocalSearchParams } from "expo-router";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+	Platform,
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { toast } from "sonner-native";
 import z from "zod";
 import {
@@ -24,12 +32,12 @@ import {
 } from "@/src/queries/posts";
 
 const editPostSchema = z.object({
-	categoryId: z.number().optional(),
-	image: z.string().optional(),
-	title: z.string().optional(),
-	description: z.string().optional(),
-	emotionId: z.number().optional(),
-	emotionName: z.string().optional(),
+	categoryId: z.number().nullable().optional(),
+	image: z.string().nullable().optional(),
+	title: z.string().nullable().optional(),
+	description: z.string().nullable().optional(),
+	emotionId: z.number().nullable().optional(),
+	emotionName: z.string().nullable().optional(),
 });
 
 const EditPost = () => {
@@ -49,7 +57,7 @@ const EditPost = () => {
 		uploading,
 		imagePath,
 		hasChanged: imageChanged,
-	} = useImagePicker(post?.image);
+	} = useImagePicker(post?.image ?? "");
 
 	const {
 		control,
@@ -74,103 +82,112 @@ const EditPost = () => {
 	};
 
 	return (
-		<ScreenWrapper showPattern bgOpacity={0.2}>
-			<View style={styles.container}>
-				<Controller
-					control={control}
-					name="categoryId"
-					render={({ field: { onChange, value } }) => (
-						<View>
-							<Text>Kategorija</Text>
-							<Select
-								value={value}
-								onChange={onChange}
-								placeholder="Izaberite kategoriju"
-								options={(categories || []).map((category) => ({
-									id: category.id,
-									name: category.name ?? "",
-								}))}
-								title="Kategorije"
-								description="Izaberite kategoriju za vašu objavu"
-							/>
-						</View>
-					)}
-				/>
-				<Pressable onPress={pickImage}>
-					{uploading ? (
-						<View style={styles.imageUpload}>
-							<Text>Učitavam...</Text>
-						</View>
-					) : imagePath ? (
-						<SupabaseImage
-							path={imagePath}
-							style={{ width: "100%", height: 200, borderRadius: 10 }}
+		<ScreenWrapper showPattern isModal bgOpacity={0.2}>
+			<KeyboardAvoidingView
+				style={{ flex: 1 }}
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				keyboardVerticalOffset={100}
+			>
+				<ScrollView style={{ flex: 1 }}>
+					<View style={styles.container}>
+						<Controller
+							control={control}
+							name="categoryId"
+							render={({ field: { onChange, value } }) => (
+								<View>
+									<Text>Kategorija</Text>
+									<Select
+										value={value ?? undefined}
+										onChange={onChange}
+										placeholder="Izaberite kategoriju"
+										options={(categories || []).map((category) => ({
+											id: category.id,
+											name: category.name ?? "",
+										}))}
+										title="Kategorije"
+										description="Izaberite kategoriju za vašu objavu"
+									/>
+								</View>
+							)}
 						/>
-					) : (
-						<View style={styles.imageUpload}>
-							<Feather name="plus-circle" size={24} />
-							<Text>Dodaj sliku</Text>
-						</View>
-					)}
-				</Pressable>
-				<Controller
-					name="emotionId"
-					control={control}
-					render={({ field: { onChange, value } }) => (
-						<View>
-							<Text>Osjećam se...</Text>
-							<Select
-								value={value}
-								onChange={onChange}
-								placeholder="Kako se osjećate?"
-								options={(emotions || []).map((emotion) => ({
-									id: emotion.id,
-									name: emotion.title ?? "",
-									icon: newEmotionIcons()[emotion.id],
-								}))}
-								title="Emocije"
-								description="Izrazite osjećaje povezane s vašom objavom"
-							/>
-						</View>
-					)}
-				/>
-				<Controller
-					name="title"
-					control={control}
-					render={({ field }) => (
-						<View>
-							<Text>Naslov</Text>
-							<Input
-								placeholder="Unesite naslov"
-								value={field.value ?? ""}
-								onChangeText={field.onChange}
-							/>
-						</View>
-					)}
-				/>
-				<Controller
-					name="description"
-					control={control}
-					render={({ field }) => (
-						<View>
-							<Text>Opis</Text>
-							<Input
-								placeholder="Podijelite vaše mišljenje"
-								value={field.value ?? ""}
-								onChangeText={field.onChange}
-								multiline
-								numberOfLines={4}
-							/>
-						</View>
-					)}
-				/>
-				<Button
-					title="Ažuriraj objavu"
-					onPress={handleSubmit(onSubmit)}
-					loading={isPending}
-					disabled={!isDirty && !imageChanged}
-				/>
-			</View>
+						<Pressable onPress={pickImage}>
+							{uploading ? (
+								<View style={styles.imageUpload}>
+									<Text>Učitavam...</Text>
+								</View>
+							) : imagePath ? (
+								<SupabaseImage
+									path={imagePath}
+									style={{ width: "100%", height: 200, borderRadius: 10 }}
+								/>
+							) : (
+								<View style={styles.imageUpload}>
+									<Feather name="plus-circle" size={24} />
+									<Text>Dodaj sliku</Text>
+								</View>
+							)}
+						</Pressable>
+						<Controller
+							name="emotionId"
+							control={control}
+							render={({ field: { onChange, value } }) => (
+								<View>
+									<Text>Osjećam se...</Text>
+									<Select
+										title="Emocije"
+										description="Izrazite osjećaje povezane s vašom objavom"
+										value={value ?? undefined}
+										onChange={onChange}
+										placeholder="Kako se osjećate?"
+										useColorGroups
+										options={(emotions || []).map((emotion) => ({
+											id: emotion.id,
+											name: emotion.title ?? "",
+											icon: newEmotionIcons()[emotion.id],
+										}))}
+									/>
+								</View>
+							)}
+						/>
+						<Controller
+							name="title"
+							control={control}
+							render={({ field }) => (
+								<View>
+									<Text>Naslov</Text>
+									<Input
+										placeholder="Unesite naslov"
+										value={field.value ?? ""}
+										onChangeText={field.onChange}
+									/>
+								</View>
+							)}
+						/>
+						<Controller
+							name="description"
+							control={control}
+							render={({ field }) => (
+								<View>
+									<Text>Opis</Text>
+									<Input
+										placeholder="Podijelite vaše mišljenje"
+										value={field.value ?? ""}
+										onChangeText={field.onChange}
+										multiline
+										numberOfLines={4}
+									/>
+								</View>
+							)}
+						/>
+						<Button
+							title="Ažuriraj objavu"
+							onPress={handleSubmit(onSubmit)}
+							loading={isPending}
+							disabled={!isDirty && !imageChanged}
+						/>
+					</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
 		</ScreenWrapper>
 	);
 };

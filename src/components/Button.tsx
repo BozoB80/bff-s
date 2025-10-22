@@ -1,6 +1,5 @@
 import { Feather } from "@expo/vector-icons";
 import {
-	Pressable,
 	type StyleProp,
 	StyleSheet,
 	Text,
@@ -8,6 +7,7 @@ import {
 	View,
 	type ViewStyle,
 } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
 import { theme } from "../constants/theme";
 import Loading from "./Loading";
 
@@ -106,9 +106,9 @@ const Button = ({
 	}
 
 	return (
-		<Pressable
+		<RectButton
 			onPress={onPress}
-			disabled={disabled}
+			enabled={!disabled}
 			style={[
 				styles.button,
 				variantStyles.button,
@@ -134,7 +134,7 @@ const Button = ({
 					</Text>
 				</View>
 			)}
-		</Pressable>
+	</RectButton>
 	);
 };
 

@@ -2,7 +2,16 @@ import { Feather } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+	KeyboardAvoidingView,
+	Platform,
+	Pressable,
+	ScrollView,
+	StatusBar,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 import { toast } from "sonner-native";
 import z from "zod";
 import { Button, Header, Input, Select, SupabaseImage } from "@/src/components";
@@ -75,107 +84,119 @@ const CreatePage = () => {
 	};
 
 	return (
-		<View>
+		<View style={{ flex: 1 }}>
 			<Header />
-			<Text style={styles.post}>Kreiraj objavu</Text>
-			<View style={styles.container}>
-				<Controller
-					name={"categoryId"}
-					control={control}
-					render={({ field: { onChange, value } }) => (
-						<View>
-							<Text>Kategorija</Text>
-							<Select
-								value={value}
-								onChange={onChange}
-								placeholder="Izaberite kategoriju"
-								options={(categories || []).map((category) => ({
-									id: category.id,
-									name: category.name ?? "",
-								}))}
-								title="Kategorije"
-								description="Izaberite kategoriju za vašu objavu"
-							/>
-						</View>
-					)}
-				/>
-				<Pressable onPress={pickImage}>
-					{uploading ? (
-						<View style={styles.imageUpload}>
-							<Text>Učitavam...</Text>
-						</View>
-					) : imagePath ? (
-						<SupabaseImage
-							path={imagePath}
-							style={{ width: "100%", height: 200, borderRadius: 10 }}
+			<KeyboardAvoidingView
+				style={{ flex: 1 }}
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				keyboardVerticalOffset={
+					Platform.OS === "ios"
+						? /* header height */ 50
+						: (StatusBar.currentHeight ?? 0)
+				}
+			>
+				<ScrollView style={{ flex: 1 }} scrollIndicatorInsets={{ bottom: -4 }}>
+					<Text style={styles.post}>Kreiraj objavu</Text>
+					<View style={styles.container}>
+						<Controller
+							name={"categoryId"}
+							control={control}
+							render={({ field: { onChange, value } }) => (
+								<View>
+									<Text>Kategorija</Text>
+									<Select
+										value={value}
+										onChange={onChange}
+										placeholder="Izaberite kategoriju"
+										options={(categories || []).map((category) => ({
+											id: category.id,
+											name: category.name ?? "",
+										}))}
+										title="Kategorije"
+										description="Izaberite kategoriju za vašu objavu"
+									/>
+								</View>
+							)}
 						/>
-					) : (
-						<View style={styles.imageUpload}>
-							<Feather name="plus-circle" size={24} />
-							<Text>Dodaj sliku</Text>
-						</View>
-					)}
-				</Pressable>
-				<Controller
-					name="emotionId"
-					control={control}
-					render={({ field: { onChange, value } }) => (
-						<View>
-							<Text>Osjećam se...</Text>
-							<Select
-								value={value}
-								onChange={onChange}
-								placeholder="Kako se osjećate?"
-								options={(emotions || []).map((emotion) => ({
-									id: emotion.id,
-									name: emotion.title ?? "",
-									icon: newEmotionIcons()[emotion.id],
-								}))}
-								title="Emocije"
-								description="Izrazite osjećaje povezane s vašom objavom"
-								useColorGroups
-							/>
-						</View>
-					)}
-				/>
-				<Controller
-					name="title"
-					control={control}
-					render={({ field }) => (
-						<View>
-							<Text>Naslov</Text>
-							<Input
-								placeholder="Unesite naslov"
-								value={field.value ?? ""}
-								onChangeText={field.onChange}
-							/>
-						</View>
-					)}
-				/>
-				<Controller
-					name="description"
-					control={control}
-					render={({ field }) => (
-						<View>
-							<Text>Opis</Text>
-							<Input
-								placeholder="Podijelite vaše mišljenje"
-								value={field.value ?? ""}
-								onChangeText={field.onChange}
-								multiline
-								numberOfLines={4}
-							/>
-						</View>
-					)}
-				/>
-				<Button
-					title="Objavi"
-					loading={isPending}
-					disabled={!isDirty || isPending}
-					hasShadow
-					onPress={handleSubmit(onSubmit)}
-				/>
-			</View>
+						<Pressable onPress={pickImage}>
+							{uploading ? (
+								<View style={styles.imageUpload}>
+									<Text>Učitavam...</Text>
+								</View>
+							) : imagePath ? (
+								<SupabaseImage
+									path={imagePath}
+									style={{ width: "100%", height: 200, borderRadius: 10 }}
+								/>
+							) : (
+								<View style={styles.imageUpload}>
+									<Feather name="plus-circle" size={24} />
+									<Text>Dodaj sliku</Text>
+								</View>
+							)}
+						</Pressable>
+						<Controller
+							name="emotionId"
+							control={control}
+							render={({ field: { onChange, value } }) => (
+								<View>
+									<Text>Osjećam se...</Text>
+									<Select
+										value={value}
+										onChange={onChange}
+										placeholder="Kako se osjećate?"
+										options={(emotions || []).map((emotion) => ({
+											id: emotion.id,
+											name: emotion.title ?? "",
+											icon: newEmotionIcons()[emotion.id],
+										}))}
+										title="Emocije"
+										description="Izrazite osjećaje povezane s vašom objavom"
+										useColorGroups
+									/>
+								</View>
+							)}
+						/>
+						<Controller
+							name="title"
+							control={control}
+							render={({ field }) => (
+								<View>
+									<Text>Naslov</Text>
+									<Input
+										placeholder="Unesite naslov"
+										value={field.value ?? ""}
+										onChangeText={field.onChange}
+									/>
+								</View>
+							)}
+						/>
+						<Controller
+							name="description"
+							control={control}
+							render={({ field }) => (
+								<View>
+									<Text>Opis</Text>
+									<Input
+										placeholder="Podijelite vaše mišljenje"
+										value={field.value ?? ""}
+										onChangeText={field.onChange}
+										multiline
+										numberOfLines={4}
+									/>
+								</View>
+							)}
+						/>
+						<Button
+							title="Objavi"
+							loading={isPending}
+							disabled={!isDirty || isPending}
+							hasShadow
+							onPress={handleSubmit(onSubmit)}
+						/>
+					</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
 		</View>
 	);
 };

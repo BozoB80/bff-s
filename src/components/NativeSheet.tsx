@@ -52,7 +52,7 @@ const NativeSheet = ({
 						},
 					]}
 				>
-					<View style={{ gap: 4 }}>
+					<View style={{ gap: 4, paddingBottom: 16 }}>
 						<View style={styles.titleWrapper}>
 							{disableBackAction ? (
 								<View style={{ width: 20 }} />
@@ -79,12 +79,13 @@ const NativeSheet = ({
 
 const styles = StyleSheet.create({
 	content: {
-		padding: 10,
+		padding: 8,
+		paddingHorizontal: 16,
 		gap: 8,
 		position: "relative",
 		flexGrow: 1,
 		backgroundColor: theme.colors.neutral200,
-		minHeight: 300,
+		minHeight: 200,
 	},
 	title: {
 		fontSize: 24,

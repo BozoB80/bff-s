@@ -3,6 +3,7 @@ import type { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { useRef } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
 import { theme } from "../constants/theme";
 import { NativeSheet } from "./NativeSheet";
 
@@ -81,8 +82,9 @@ const Select = ({
 			>
 				<FlashList
 					data={options}
+					keyExtractor={(item) => item.id.toString()}
 					renderItem={({ item, index }) => (
-						<Pressable
+						<RectButton
 							onPress={() => handleSelectOption(item)}
 							style={[
 								styles.optionPressable,
@@ -97,7 +99,7 @@ const Select = ({
 								/>
 							)}
 							<Text style={styles.optionText}>{item.name}</Text>
-						</Pressable>
+						</RectButton>
 					)}
 					contentContainerStyle={styles.contentStyle}
 					masonry
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
 		color: theme.colors.neutral500,
 	},
 	contentStyle: {
-		padding: 4,
+		padding: 8,
 	},
 	option: {
 		backgroundColor: theme.colors.primary,
@@ -159,6 +161,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		gap: 8,
+		flex: 1,
 	},
 	optionText: {
 		color: theme.colors.white,

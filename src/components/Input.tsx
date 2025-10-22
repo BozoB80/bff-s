@@ -21,7 +21,11 @@ const Input = (props: InputProps) => {
 			{props.icon && props.icon}
 			<TextInput
 				ref={props.inputRef && props.inputRef}
-				style={{ flex: 1, height: props.multiline ? 100 : 50 }}
+				style={{
+					flex: 1,
+					height: props.multiline ? 100 : 50,
+					color: theme.colors.black,
+				}}
 				placeholderTextColor={theme.colors.neutral500}
 				{...props}
 			/>

@@ -4,13 +4,10 @@ import { router } from "expo-router";
 import { useRef } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { toast } from "sonner-native";
+import { theme } from "@/src/constants/theme";
 import { useRelativeTime } from "@/src/hooks";
 import { useAuth } from "@/src/providers";
-import {
-	useDeletePost,
-	useGetEmotions,
-	useGetPostById,
-} from "@/src/queries/posts";
+import { useDeletePost, useGetPostById } from "@/src/queries/posts";
 import { useGetUser } from "@/src/queries/users";
 import { Button } from "../Button";
 import { NativeSheet } from "../NativeSheet";
@@ -22,13 +19,13 @@ type PostProps = {
 };
 
 const Post = ({ postId }: PostProps) => {
-	const { data: post } = useGetPostById(postId);
-	const { data: user } = useGetUser(post?.userId ?? "");
-	const { user: currentUser } = useAuth();
 	const formatRelativeTime = useRelativeTime();
 	const sheetRef = useRef<TrueSheet>(null);
 	const deleteRef = useRef<TrueSheet>(null);
 
+	const { data: post } = useGetPostById(postId);
+	const { data: user } = useGetUser(post?.userId ?? "");
+	const { user: currentUser } = useAuth();
 	const { mutate: deletePost } = useDeletePost(() => {
 		sheetRef.current?.dismiss();
 		toast.success("Post je uspješno izbrisan.");
@@ -40,7 +37,15 @@ const Post = ({ postId }: PostProps) => {
 				<View style={styles.userContainer}>
 					<Avatar src={user.avatar ?? ""} />
 					<View>
-						<Text style={styles.userName}>{user.name}</Text>
+						<View style={{ flexDirection: "row", alignItems: "center" }}>
+							<Text style={styles.userName}>{user.name} </Text>
+							{post?.emotionName && (
+								<View style={{ flexDirection: "row", alignItems: "center" }}>
+									<Text>se osjeća </Text>
+									<Text style={styles.emotions}>{post?.emotionName}</Text>
+								</View>
+							)}
+						</View>
 						<Text>
 							{post?.created_at
 								? formatRelativeTime(new Date(post.created_at))
@@ -65,7 +70,7 @@ const Post = ({ postId }: PostProps) => {
 				<Button
 					variant="outline"
 					iconName="edit-3"
-					title="Uredi post"
+					title="Uredi objavu"
 					onPress={() => {
 						router.push(`/post/${postId}`);
 						sheetRef.current?.dismiss();
@@ -73,14 +78,14 @@ const Post = ({ postId }: PostProps) => {
 				/>
 				<Button
 					iconName="trash-2"
-					title="Izbriši post"
+					title="Izbriši objavu"
 					onPress={() => deleteRef.current?.present()}
 				/>
 			</NativeSheet>
 			<NativeSheet
 				ref={deleteRef}
-				title="Brisanje posta"
-				description="Jeste li sigurni da želite izbrisati ovaj post?"
+				title="Brisanje objave"
+				description="Jeste li sigurni da želite izbrisati ovu objavu?"
 			>
 				<View style={{ flexDirection: "row", gap: 8 }}>
 					<Button
@@ -116,7 +121,11 @@ const styles = StyleSheet.create({
 		gap: 8,
 	},
 	userName: {
-		fontWeight: "500",
+		fontWeight: theme.fonts.bold,
+	},
+	emotions: {
+		fontWeight: theme.fonts.bold,
+		fontVariant: ["small-caps"],
 	},
 	image: {
 		width: "100%",

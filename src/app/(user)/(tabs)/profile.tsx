@@ -135,7 +135,7 @@ const Profile = () => {
 									style={styles.avatar}
 								/>
 								<Pressable onPress={pickAvatar} style={styles.avatarEditButton}>
-									<Feather name="plus" size={20} color="black" />
+									<Feather name="plus" size={20} color="white" />
 								</Pressable>
 							</View>
 						) : (

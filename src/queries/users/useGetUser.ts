@@ -1,8 +1,9 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
+import type { Tables } from "@/src/types/database.types";
 
 const useGetUser = (userId: string) => {
-	return useQuery({
+	return useQuery<Tables<"users">>({
 		queryKey: ["user", userId],
 		queryFn: async () => {
 			const { data, error } = await supabase

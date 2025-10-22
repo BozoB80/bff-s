@@ -1,6 +1,8 @@
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { theme } from "../constants/theme";
 import { BackButton } from "./BackButton";
 
@@ -11,9 +13,13 @@ type HeaderProps = {
 
 const Header = ({ showBackButton = false, headerRight }: HeaderProps) => {
 	const router = useRouter();
+	const insets = useSafeAreaInsets();
 
 	return (
-		<View style={styles.container}>
+		<LinearGradient
+			colors={[theme.colors.primary, theme.colors.dark]}
+			style={[styles.container, { paddingTop: insets.top || 16 }]}
+		>
 			{showBackButton && (
 				<View style={styles.backButton}>
 					<BackButton router={router} />
@@ -25,7 +31,7 @@ const Header = ({ showBackButton = false, headerRight }: HeaderProps) => {
 				style={styles.logo}
 			/>
 			{headerRight && <View style={styles.headerRight}>{headerRight}</View>}
-		</View>
+		</LinearGradient>
 	);
 };
 

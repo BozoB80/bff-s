@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
+import type { Tables } from "@/src/types/database.types";
 
 const useGetPostById = (postId: number) => {
-	return useQuery({
+	return useQuery<Tables<"posts">>({
 		queryKey: ["postById", postId],
 		queryFn: async () => {
 			const { data, error } = await supabase

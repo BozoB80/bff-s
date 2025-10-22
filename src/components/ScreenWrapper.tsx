@@ -29,7 +29,7 @@ const ScreenWrapper = ({
 	let paddingBottom = 0;
 
 	if (isModal) {
-		paddingTop = Platform.OS === "ios" ? height * 0.02 : 45;
+		paddingTop = Platform.OS === "ios" ? height * 0.02 : 10;
 		paddingBottom = height * 0.02;
 	}
 
@@ -38,7 +38,6 @@ const ScreenWrapper = ({
 			style={{
 				flex: 1,
 				backgroundColor: isModal ? theme.colors.white : theme.colors.neutral100,
-				padding: 10,
 			}}
 			imageStyle={{ opacity: showPattern ? bgOpacity : 0 }}
 			source={require("@/assets/images/background.png")}
