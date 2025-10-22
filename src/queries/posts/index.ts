@@ -4,4 +4,5 @@ export * from "./useGetCategories";
 export * from "./useGetEmotions";
 export * from "./useGetPostById";
 export * from "./useGetPosts";
+export * from "./useGetPostsByUser";
 export * from "./useUpdatePost";

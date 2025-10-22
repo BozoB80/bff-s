@@ -36,7 +36,11 @@ const Post = ({ postId }: PostProps) => {
 			{user && (
 				<View style={styles.userContainer}>
 					<Avatar src={user.avatar ?? ""} />
-					<View>
+					<Pressable
+						onPress={() => {
+							router.push(`/profile-other/${user.id}`);
+						}}
+					>
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
 							<Text style={styles.userName}>{user.name} </Text>
 							{post?.emotionName && (
@@ -51,7 +55,7 @@ const Post = ({ postId }: PostProps) => {
 								? formatRelativeTime(new Date(post.created_at))
 								: ""}
 						</Text>
-					</View>
+					</Pressable>
 					{post?.userId === currentUser?.id && (
 						<Pressable
 							style={{ marginLeft: "auto" }}
@@ -62,7 +66,6 @@ const Post = ({ postId }: PostProps) => {
 					)}
 				</View>
 			)}
-
 			<Text style={styles.title}>{post?.title}</Text>
 			<Text>{post?.description}</Text>
 			{post?.image && <SupabaseImage path={post.image} style={styles.image} />}

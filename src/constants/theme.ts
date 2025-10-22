@@ -37,7 +37,7 @@ export const theme = {
 		green: "#22c55e",
 	},
 	fonts: {
-		medlum: "500" as FontWeight,
+		medium: "500" as FontWeight,
 		semibold: "600" as FontWeight,
 		bold: "700" as FontWeight,
 		extraBold: "800" as FontWeight,
