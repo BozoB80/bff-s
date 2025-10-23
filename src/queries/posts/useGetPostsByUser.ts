@@ -2,13 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
 import type { Tables } from "@/src/types/database.types";
 
+export type PostWithUser = Tables<"posts"> & {
+	users: Tables<"users"> | null;
+};
+
 const useGetPostsByUser = (userId: string) => {
-	return useQuery<Tables<"posts">[]>({
+	return useQuery<PostWithUser[]>({
 		queryKey: ["posts", "user", userId],
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("posts")
-				.select("*")
+				.select("*, users(*)")
 				.eq("userId", userId)
 				.order("created_at", { ascending: false });
 
@@ -16,7 +20,7 @@ const useGetPostsByUser = (userId: string) => {
 				throw new Error(error.message);
 			}
 
-			return data;
+			return data as PostWithUser[];
 		},
 		enabled: !!userId,
 		initialData: [],

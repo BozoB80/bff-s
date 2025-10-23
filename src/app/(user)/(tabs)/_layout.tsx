@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons"; // Changed from Feather to Ionicons
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { theme } from "@/src/constants/theme";
@@ -15,7 +15,7 @@ const TabsLayout = () => {
 					backgroundColor: "#fff",
 					borderTopWidth: 1,
 					borderTopColor: "#E1E8ED",
-					height: 50 + insets.bottom,
+					height: 55 + insets.bottom,
 					paddingTop: 6,
 				},
 				headerShown: false,
@@ -25,8 +25,12 @@ const TabsLayout = () => {
 				name="index"
 				options={{
 					title: "",
-					tabBarIcon: ({ color, size }) => (
-						<Feather name="home" size={size} color={color} />
+					tabBarIcon: ({ color, size, focused }) => (
+						<Ionicons
+							name={focused ? "home" : "home-outline"}
+							size={size}
+							color={color}
+						/>
 					),
 				}}
 			/>
@@ -34,8 +38,12 @@ const TabsLayout = () => {
 				name="search"
 				options={{
 					title: "",
-					tabBarIcon: ({ color, size }) => (
-						<Feather name="search" size={size} color={color} />
+					tabBarIcon: ({ color, size, focused }) => (
+						<Ionicons
+							name={focused ? "search" : "search-outline"}
+							size={size}
+							color={color}
+						/>
 					),
 				}}
 			/>
@@ -43,8 +51,12 @@ const TabsLayout = () => {
 				name="create"
 				options={{
 					title: "",
-					tabBarIcon: ({ color, size }) => (
-						<Feather name="plus-circle" size={size} color={color} />
+					tabBarIcon: ({ color, size, focused }) => (
+						<Ionicons
+							name={focused ? "add-circle" : "add-circle-outline"}
+							size={size}
+							color={color}
+						/>
 					),
 				}}
 			/>
@@ -52,8 +64,12 @@ const TabsLayout = () => {
 				name="messages"
 				options={{
 					title: "",
-					tabBarIcon: ({ color, size }) => (
-						<Feather name="mail" size={size} color={color} />
+					tabBarIcon: ({ color, size, focused }) => (
+						<Ionicons
+							name={focused ? "mail" : "mail-outline"}
+							size={size}
+							color={color}
+						/>
 					),
 				}}
 			/>
@@ -61,8 +77,12 @@ const TabsLayout = () => {
 				name="profile"
 				options={{
 					title: "",
-					tabBarIcon: ({ color, size }) => (
-						<Feather name="user" size={size} color={color} />
+					tabBarIcon: ({ color, size, focused }) => (
+						<Ionicons
+							name={focused ? "person" : "person-outline"}
+							size={size}
+							color={color}
+						/>
 					),
 				}}
 			/>

@@ -32,6 +32,58 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: number
+          parent_id: number | null
+          post_id: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: number
+          parent_id?: number | null
+          post_id: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: number
+          parent_id?: number | null
+          post_id?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emotions: {
         Row: {
           created_at: string
@@ -50,6 +102,42 @@ export type Database = {
         }
         Relationships: []
       }
+      likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           categoryId: number | null
@@ -59,7 +147,9 @@ export type Database = {
           emotionName: string | null
           id: number
           image: string | null
+          likes_count: number
           title: string | null
+          total_comments_count: number
           userId: string | null
         }
         Insert: {
@@ -70,7 +160,9 @@ export type Database = {
           emotionName?: string | null
           id?: number
           image?: string | null
+          likes_count?: number
           title?: string | null
+          total_comments_count?: number
           userId?: string | null
         }
         Update: {
@@ -81,7 +173,9 @@ export type Database = {
           emotionName?: string | null
           id?: number
           image?: string | null
+          likes_count?: number
           title?: string | null
+          total_comments_count?: number
           userId?: string | null
         }
         Relationships: [

@@ -13,7 +13,7 @@ const Home = () => {
 			<Header />
 			<FlatList
 				data={posts}
-				renderItem={({ item }) => <Post key={item.id} postId={item.id} />}
+				renderItem={({ item }) => <Post key={item.id} post={item} />}
 				contentContainerStyle={{ gap: 4 }}
 				ListEmptyComponent={() => <Text>Nema objava</Text>}
 			/>

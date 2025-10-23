@@ -17,8 +17,8 @@ import { useGetUser } from "@/src/queries/users";
 import type { Tables } from "@/src/types/database.types";
 
 const Info = memo(({ user }: { user: Tables<"users"> }) => (
-	<View style={styles.container}>
-		<ScrollView style={{ flex: 1 }}>
+	<ScrollView style={{ flex: 1 }}>
+		<View style={styles.container}>
 			{user.address && (
 				<View>
 					<Text style={styles.label}>Živim na adresi:</Text>
@@ -31,8 +31,8 @@ const Info = memo(({ user }: { user: Tables<"users"> }) => (
 					<Text>{user.bio}</Text>
 				</View>
 			)}
-		</ScrollView>
-	</View>
+		</View>
+	</ScrollView>
 ));
 
 const Objave = memo(({ userId }: { userId: string }) => {
@@ -41,7 +41,7 @@ const Objave = memo(({ userId }: { userId: string }) => {
 	return (
 		<ScrollView style={{ flex: 1 }}>
 			{posts?.map((post) => (
-				<Post key={post.id} postId={post.id} />
+				<Post key={post.id} post={post} />
 			))}
 		</ScrollView>
 	);

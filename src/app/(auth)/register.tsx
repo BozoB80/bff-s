@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		gap: 45,
-		paddingHorizontal: 5,
+		paddingHorizontal: 20,
 	},
 	welcomeText: {
 		fontSize: 36,

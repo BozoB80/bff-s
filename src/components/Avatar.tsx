@@ -4,21 +4,36 @@ import { StyleSheet, Text, View } from "react-native";
 import { theme } from "@/src/constants/theme";
 import { SupabaseImage } from "./SupabaseImage";
 
+type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
+
 type Props = {
 	name?: string | null;
 	path?: string | null;
 	bucket?: string;
-	size?: number;
+	size?: AvatarSize | number;
 	style?: StyleProp<ViewStyle>;
+};
+
+const sizeMap: Record<AvatarSize, number> = {
+	xs: 24,
+	sm: 40,
+	md: 64,
+	lg: 100,
+	xl: 128,
 };
 
 const Avatar: React.FC<Props> = ({
 	name,
 	path,
 	bucket = "avatars",
-	size = 100,
+	size = "lg",
 	style,
 }) => {
+	const resolvedSize = useMemo(() => {
+		if (typeof size === "number") return size;
+		return sizeMap[size];
+	}, [size]);
+
 	const initials = useMemo(() => {
 		const n = name ?? "";
 		if (!n) return "";
@@ -30,16 +45,16 @@ const Avatar: React.FC<Props> = ({
 	}, [name]);
 
 	const avatarStyle: StyleProp<ImageStyle> = {
-		width: size,
-		height: size,
-		borderRadius: size / 2,
+		width: resolvedSize,
+		height: resolvedSize,
+		borderRadius: resolvedSize / 2,
 		backgroundColor: "white",
 	};
 
 	const placeholderStyle: StyleProp<ViewStyle> = {
-		width: size,
-		height: size,
-		borderRadius: size / 2,
+		width: resolvedSize,
+		height: resolvedSize,
+		borderRadius: resolvedSize / 2,
 		backgroundColor: "#f0f0f0",
 		justifyContent: "center",
 		alignItems: "center",
@@ -59,7 +74,7 @@ const Avatar: React.FC<Props> = ({
 					<Text
 						style={[
 							styles.text,
-							{ fontSize: Math.max(12, Math.floor(size / 6)) },
+							{ fontSize: Math.max(8, Math.floor(resolvedSize / 6)) },
 						]}
 					>
 						{initials}

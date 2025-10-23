@@ -11,6 +11,7 @@ interface InputProps extends TextInputProps {
 	containerStyles?: ViewStyle;
 	icon?: React.ReactNode;
 	inputRef?: React.RefObject<TextInput>;
+	iconRight?: React.ReactNode;
 }
 
 const Input = (props: InputProps) => {
@@ -29,6 +30,7 @@ const Input = (props: InputProps) => {
 				placeholderTextColor={theme.colors.neutral500}
 				{...props}
 			/>
+			{props.iconRight && props.iconRight}
 		</View>
 	);
 };
