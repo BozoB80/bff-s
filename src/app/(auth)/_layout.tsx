@@ -7,6 +7,7 @@ const AuthLayout = () => {
 	const { setAuth } = useAuth();
 	const router = useRouter();
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		supabase.auth.onAuthStateChange((_event, session) => {
 			if (session) {

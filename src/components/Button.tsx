@@ -38,11 +38,13 @@ const getVariantStyles = (variant: ButtonProps["variant"]) => {
 		case "icon":
 			return {
 				button: {
-					height: 40,
-					width: 40,
+					backgroundColor: "transparent",
+					padding: 0,
+					height: 20,
 				},
 				text: {
 					fontSize: 18,
+					color: theme.colors.dark,
 				},
 			};
 		default: // default
@@ -54,7 +56,7 @@ const getVariantStyles = (variant: ButtonProps["variant"]) => {
 };
 
 type ButtonProps = {
-	title: string;
+	title?: string;
 	onPress: () => void;
 	buttonStyle?: StyleProp<ViewStyle>;
 	textStyle?: StyleProp<TextStyle>;
@@ -134,7 +136,7 @@ const Button = ({
 					</Text>
 				</View>
 			)}
-	</RectButton>
+		</RectButton>
 	);
 };
 

@@ -168,7 +168,7 @@ const Post = ({ post }: PostProps) => {
 					/>
 				</View>
 			</NativeSheet>
-			<NativeSheet ref={commentRef} title="Komentari" disableBackAction>
+			<NativeSheet ref={commentRef} disableBackAction>
 				<Comments data={post ?? []} user={currentUser} />
 			</NativeSheet>
 		</View>

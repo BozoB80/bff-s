@@ -13,6 +13,7 @@ type TNativeSheetProps = {
 	removeHorizontalPadding?: boolean;
 	disableBackAction?: boolean;
 	collapsable?: boolean;
+	fullHeight?: boolean;
 	children: ReactNode;
 };
 
@@ -24,6 +25,7 @@ const NativeSheet = ({
 	removeHorizontalPadding,
 	disableBackAction,
 	collapsable = true,
+	fullHeight = false,
 	children,
 }: TNativeSheetProps) => {
 	const [sheetKey, setSheetKey] = useState(0);
@@ -38,7 +40,7 @@ const NativeSheet = ({
 			ref={ref}
 			dismissible
 			key={`sheet-${sheetKey}`}
-			sizes={["auto"]}
+			sizes={fullHeight ? ["100%"] : ["auto"]}
 			cornerRadius={theme.radius.xl}
 			onDismiss={() => setSheetKey(Math.random() * 1000)}
 			collapsable={collapsable}
@@ -52,7 +54,7 @@ const NativeSheet = ({
 						},
 					]}
 				>
-					<View style={{ gap: 4, paddingBottom: 16 }}>
+					<View style={{ gap: 4 }}>
 						<View style={styles.titleWrapper}>
 							{disableBackAction ? (
 								<View style={{ width: 20 }} />
@@ -85,7 +87,6 @@ const styles = StyleSheet.create({
 		position: "relative",
 		flexGrow: 1,
 		backgroundColor: theme.colors.neutral200,
-		minHeight: 200,
 	},
 	title: {
 		fontSize: 24,

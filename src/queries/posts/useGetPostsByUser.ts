@@ -1,13 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
-import type { Tables } from "@/src/types/database.types";
-
-export type PostWithUser = Tables<"posts"> & {
-	users: Tables<"users"> | null;
-};
+import type { TPostWithUserAndComments } from "@/src/types";
 
 const useGetPostsByUser = (userId: string) => {
-	return useQuery<PostWithUser[]>({
+	return useQuery<TPostWithUserAndComments[]>({
 		queryKey: ["posts", "user", userId],
 		queryFn: async () => {
 			const { data, error } = await supabase
@@ -20,7 +16,7 @@ const useGetPostsByUser = (userId: string) => {
 				throw new Error(error.message);
 			}
 
-			return data as PostWithUser[];
+			return data;
 		},
 		enabled: !!userId,
 		initialData: [],

@@ -1,1 +1,1 @@
-export * from "./TComments";
+export * from "./TPost";

@@ -6,7 +6,17 @@
 		"useIgnoreFile": false
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": false,
+		"includes": [
+			"**",
+			"!api/services",
+			"!api/mocks/generated",
+			"!.expo",
+			"!assets",
+			"!android",
+			"!ios",
+			"!.vscode"
+		]
 	},
 	"formatter": {
 		"enabled": true,
