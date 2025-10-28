@@ -14,10 +14,10 @@ import {
 } from "@/src/queries/likes";
 import { useDeletePost } from "@/src/queries/posts";
 import type { TPostWithUserAndComments } from "@/src/types";
+import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 import { NativeSheet } from "../NativeSheet";
 import { SupabaseImage } from "../SupabaseImage";
-import { Avatar } from "../ui";
 import Comments from "./Comments";
 
 type PostProps = {
@@ -39,7 +39,7 @@ const Post = ({ post }: PostProps) => {
 		toast.success("Post je uspješno izbrisan.");
 	});
 
-	const isOwnPost = post.userId === currentUser?.id;
+	const isOwnPost = post.user_id === currentUser?.id;
 	const { data: isLiked } = useGetLikeStatus(
 		post.id,
 		currentUser?.id ?? "",
@@ -50,7 +50,7 @@ const Post = ({ post }: PostProps) => {
 	const { mutate: removeLike } = useRemoveLike(post.id, currentUser?.id ?? "");
 
 	const handleLikePress = () => {
-		if (post.userId === currentUser?.id) {
+		if (post.user_id === currentUser?.id) {
 			toast.error("Nije moguće lajkati vlastitu objavu.");
 			return;
 		}
@@ -74,13 +74,14 @@ const Post = ({ post }: PostProps) => {
 	return (
 		<View style={styles.container}>
 			{user && (
-				<View style={styles.userContainer}>
-					<Avatar src={user.avatar ?? ""} />
-					<Pressable
-						onPress={() => {
-							router.push(`/profile-other/${user.id}`);
-						}}
-					>
+				<Pressable
+					onPress={() => {
+						router.push(`/profile-other/${user.id}`);
+					}}
+					style={styles.userContainer}
+				>
+					<Avatar path={user.avatar ?? ""} bucket="avatars" size="sm" />
+					<View>
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
 							<Text style={styles.userName}>{user.name} </Text>
 							{post?.emotionName && (
@@ -95,8 +96,8 @@ const Post = ({ post }: PostProps) => {
 								? formatRelativeTime(new Date(post.created_at))
 								: ""}
 						</Text>
-					</Pressable>
-					{post?.userId === currentUser?.id && (
+					</View>
+					{post?.user_id === currentUser?.id && (
 						<Pressable
 							style={{ marginLeft: "auto" }}
 							onPress={() => sheetRef.current?.present()}
@@ -104,11 +105,19 @@ const Post = ({ post }: PostProps) => {
 							<Feather name="more-vertical" size={18} />
 						</Pressable>
 					)}
-				</View>
+				</Pressable>
 			)}
-			<Text style={styles.title}>{post?.title}</Text>
-			<Text>{post?.description}</Text>
-			{post?.image && <SupabaseImage path={post.image} style={styles.image} />}
+			<Pressable
+				onPress={() => {
+					router.navigate(`/post-view/${post.id}`);
+				}}
+			>
+				<Text style={styles.title}>{post?.title}</Text>
+				<Text>{post?.description}</Text>
+				{post?.image && (
+					<SupabaseImage path={post.image} style={styles.image} />
+				)}
+			</Pressable>
 			<View style={styles.likesContainer}>
 				<View style={styles.likesBar}>
 					<Ionicons

@@ -2,9 +2,13 @@ import { Ionicons } from "@expo/vector-icons"; // Changed from Feather to Ionico
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { theme } from "@/src/constants/theme";
+import { useAuth } from "@/src/providers";
+import { useUnreadCount } from "@/src/queries/notifications";
 
 const TabsLayout = () => {
 	const insets = useSafeAreaInsets();
+	const { user: currentUser } = useAuth();
+	const { unreadCount } = useUnreadCount(currentUser?.id ?? "");
 
 	return (
 		<Tabs
@@ -61,16 +65,20 @@ const TabsLayout = () => {
 				}}
 			/>
 			<Tabs.Screen
-				name="messages"
+				name="notifications"
 				options={{
 					title: "",
 					tabBarIcon: ({ color, size, focused }) => (
 						<Ionicons
-							name={focused ? "mail" : "mail-outline"}
+							name={focused ? "notifications" : "notifications-outline"}
 							size={size}
 							color={color}
 						/>
 					),
+					tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
+					tabBarBadgeStyle: {
+						backgroundColor: theme.colors.primary,
+					},
 				}}
 			/>
 			<Tabs.Screen

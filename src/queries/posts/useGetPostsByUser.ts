@@ -8,8 +8,8 @@ const useGetPostsByUser = (userId: string) => {
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("posts")
-				.select("*, users(*)")
-				.eq("userId", userId)
+				.select("*, users(*), comments(*, users(*))")
+				.eq("user_id", userId)
 				.order("created_at", { ascending: false });
 
 			if (error) {

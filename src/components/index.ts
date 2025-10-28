@@ -5,6 +5,7 @@ export * from "./Header";
 export * from "./Input";
 export * from "./Loading";
 export * from "./NativeSheet";
+export * from "./notifications";
 export * from "./posts";
 export * from "./ScreenWrapper";
 export * from "./Select";

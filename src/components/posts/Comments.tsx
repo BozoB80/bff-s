@@ -1,7 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, type ViewStyle } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { theme } from "@/src/constants/theme";
 import { useAddComment } from "@/src/queries/comments";
@@ -13,9 +13,10 @@ import CommentDetails from "./CommentDetails";
 type TCommentsProps = {
 	data: TPostWithUserAndComments;
 	user: Tables<"users"> | null;
+	containerStyle?: ViewStyle;
 };
 
-const Comments = ({ data, user }: TCommentsProps) => {
+const Comments = ({ data, user, containerStyle }: TCommentsProps) => {
 	const [commentText, setCommentText] = useState("");
 	const [replyTo, setReplyTo] = useState<number | null>(null);
 	const { mutate: addComment } = useAddComment(data.id);
@@ -76,12 +77,13 @@ const Comments = ({ data, user }: TCommentsProps) => {
 
 	return (
 		<View
-			style={{
-				flex: 1,
-				flexDirection: "column",
-				justifyContent: "space-between",
-				height: "100%",
-			}}
+			style={[
+				{
+					flex: 1,
+					flexDirection: "column",
+				},
+				containerStyle,
+			]}
 		>
 			<FlashList
 				data={nestedComments}
@@ -89,6 +91,7 @@ const Comments = ({ data, user }: TCommentsProps) => {
 				renderItem={({ item }) => (
 					<CommentDetails comment={item} onReply={onReply} user={user} />
 				)}
+				scrollEnabled={true}
 				ListEmptyComponent={
 					<View
 						style={{

@@ -77,7 +77,7 @@ const CreatePage = () => {
 			image: imagePath ?? "",
 			categoryId: data?.categoryId ?? null,
 			emotionId: data?.emotionId ?? null,
-			userId: user?.id,
+			user_id: user?.id,
 			emotionName:
 				emotions?.find((e) => e.id === data.emotionId)?.title ?? null,
 		});

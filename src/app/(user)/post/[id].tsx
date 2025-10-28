@@ -73,7 +73,7 @@ const EditPost = () => {
 			postId: Number(id),
 			postDetails: {
 				...data,
-				userId: user?.id,
+				user_id: user?.id,
 				image: imagePath,
 				emotionName:
 					emotions?.find((e) => e.id === data.emotionId)?.title ?? null,
