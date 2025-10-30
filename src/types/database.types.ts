@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      bffs: {
+        Row: {
+          bff_id: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          bff_id: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          bff_id?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_bff_bff"
+            columns: ["bff_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_bff_user"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -99,6 +132,27 @@ export type Database = {
           created_at?: string
           id?: number
           title?: string | null
+        }
+        Relationships: []
+      }
+      follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
         }
         Relationships: []
       }
@@ -262,13 +316,6 @@ export type Database = {
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "posts_userId_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
       }
       users: {
@@ -306,6 +353,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _create_notification: {
+        Args: {
+          p_actor_id: string
+          p_data?: Json
+          p_post_id?: number
+          p_type: string
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       mark_all_notifications_read: {
         Args: { _current_user: string }
         Returns: undefined

@@ -2,17 +2,22 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/src/lib/supabase";
 import type { TPostWithUserAndComments } from "@/src/types";
 
-const useGetPostById = (postId: number) => {
+const useGetPostById = (postId: number, includeComments = false) => {
 	const queryClient = useQueryClient();
 
 	return useQuery<TPostWithUserAndComments>({
-		queryKey: ["postById", postId],
+		queryKey: ["postById", postId, includeComments],
 		queryFn: async () => {
-			const { data, error } = await supabase
-				.from("posts")
-				.select("*, users(*), comments(*, users(*))")
-				.eq("id", postId)
-				.single();
+			let query = supabase.from("posts").select("*, users(*)").eq("id", postId);
+
+			if (includeComments) {
+				query = supabase
+					.from("posts")
+					.select("*, users(*), comments(*, users(*))")
+					.eq("id", postId);
+			}
+
+			const { data, error } = await query.single();
 
 			if (error) {
 				throw error;
