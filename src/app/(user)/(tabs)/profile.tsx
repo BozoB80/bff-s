@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { ErrorMessage } from "@hookform/error-message";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
@@ -16,6 +17,7 @@ import type { TablesUpdate } from "../../../types/database.types";
 
 const Profile = () => {
 	const { user } = useAuth();
+	const router = useRouter();
 	const { data: userData } = useGetUser(user?.id ?? "");
 	const { mutate: updateUser, isPending } = useUpdateUser(user?.id ?? "");
 
@@ -232,6 +234,11 @@ const Profile = () => {
 					title="Ažuriraj"
 					loading={isPending}
 					onPress={handleSubmit(onSubmit)}
+				/>
+				<Button
+					title="Pogledaj pratitelje"
+					variant="outline"
+					onPress={() => router.push("/followed-users/followed")}
 				/>
 			</View>
 		</View>

@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { format } from "date-fns";
 import { useLocalSearchParams } from "expo-router";
 import { memo, useCallback, useState } from "react";
 import {
@@ -9,9 +10,16 @@ import {
 	View,
 } from "react-native";
 import { TabBar, TabView } from "react-native-tab-view";
-import { Avatar, Header, SupabaseImage } from "@/src/components";
+import { Avatar, Button, Header, SupabaseImage } from "@/src/components";
 import { Post } from "@/src/components/posts";
 import { theme } from "@/src/constants/theme";
+import { useAuth } from "@/src/providers";
+import {
+	useFollowUser,
+	useGetFollowedUsersByUserId,
+	useGetIsFollowing,
+	useUnfollowUser,
+} from "@/src/queries/follows";
 import { useGetPostsByUser } from "@/src/queries/posts";
 import { useGetUser } from "@/src/queries/users";
 import type { Tables } from "@/src/types/database.types";
@@ -47,6 +55,43 @@ const Objave = memo(({ userId }: { userId: string }) => {
 	);
 });
 
+const Prijatelji = memo(({ userId }: { userId: string }) => {
+	const { data: followedUsers } = useGetFollowedUsersByUserId(userId);
+
+	return (
+		<ScrollView style={{ flex: 1 }}>
+			<View style={styles.container}>
+				{followedUsers?.map((user) => (
+					<View key={user.id} style={styles.userItem}>
+						<Avatar
+							name={user.name}
+							path={user.avatar}
+							bucket="avatars"
+							size={50}
+						/>
+						<View style={styles.userInfo}>
+							<View
+								style={{
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+							>
+								<Text style={{ fontWeight: "bold" }}>{user.name}</Text>
+								<Text>
+									od: {format(new Date(user.followedAt), "dd.MM.yyyy")}
+								</Text>
+							</View>
+							{user.bio && <Text style={styles.userBio}>{user.bio}</Text>}
+						</View>
+					</View>
+				))}
+				{followedUsers?.length === 0 && (
+					<Text style={styles.noUsers}>Nema pratitelja</Text>
+				)}
+			</View>
+		</ScrollView>
+	);
+});
 const routes: {
 	key: string;
 	title: string;
@@ -62,7 +107,13 @@ const OtherProfile = () => {
 	const layout = useWindowDimensions();
 	const [index, setIndex] = useState(0);
 
+	const { user } = useAuth();
 	const { data: userData } = useGetUser(id);
+	const { data: isFollowing } = useGetIsFollowing(id);
+	const { mutate: followUser } = useFollowUser(id);
+	const { mutate: unfollowUser } = useUnfollowUser(id);
+
+	const isOtherUser = user?.id !== id;
 
 	const renderScene = useCallback(
 		({ route }: { route: { key: string } }) => {
@@ -71,6 +122,8 @@ const OtherProfile = () => {
 					return userData ? <Info user={userData} /> : null;
 				case "objave":
 					return <Objave userId={id} />;
+				case "prijatelji":
+					return <Prijatelji userId={id} />;
 				default:
 					return null;
 			}
@@ -105,7 +158,31 @@ const OtherProfile = () => {
 							</View>
 						)}
 					</View>
-					<Text style={styles.userName}>{userData?.name}</Text>
+					<View
+						style={{
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "space-between",
+							marginTop: 26,
+						}}
+					>
+						<Text style={styles.userName}>{userData?.name}</Text>
+						{isOtherUser && (
+							<Button
+								iconName={isFollowing ? "user-minus" : "user-plus"}
+								title={isFollowing ? "Odprati" : "Prati"}
+								variant={isFollowing ? "outline" : "default"}
+								size="small"
+								onPress={() => {
+									if (isFollowing) {
+										unfollowUser();
+									} else {
+										followUser();
+									}
+								}}
+							/>
+						)}
+					</View>
 				</View>
 			</View>
 			<View style={{ flex: 1 }}>
@@ -184,6 +261,28 @@ const styles = StyleSheet.create({
 	userName: {
 		fontWeight: theme.fonts.bold,
 		fontSize: 30,
-		marginTop: 26,
+	},
+	userItem: {
+		flexDirection: "row",
+		alignItems: "center",
+		padding: 12,
+		backgroundColor: theme.colors.neutral50,
+		borderRadius: 8,
+		marginBottom: 8,
+	},
+	userInfo: {
+		marginLeft: 12,
+		flex: 1,
+	},
+	userBio: {
+		fontSize: 14,
+		color: theme.colors.dark,
+		marginTop: 2,
+	},
+	noUsers: {
+		textAlign: "center",
+		fontSize: 16,
+		color: theme.colors.dark,
+		marginTop: 20,
 	},
 });

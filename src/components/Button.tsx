@@ -40,7 +40,6 @@ const getVariantStyles = (variant: ButtonProps["variant"]) => {
 				button: {
 					backgroundColor: "transparent",
 					padding: 0,
-					height: 20,
 				},
 				text: {
 					fontSize: 18,
@@ -55,6 +54,41 @@ const getVariantStyles = (variant: ButtonProps["variant"]) => {
 	}
 };
 
+const getSizeStyles = (size: ButtonProps["size"]) => {
+	switch (size) {
+		case "small":
+			return {
+				button: {
+					height: 36,
+					paddingHorizontal: 12,
+				},
+				text: {
+					fontSize: 16,
+				},
+			};
+		case "large":
+			return {
+				button: {
+					height: 56,
+					paddingHorizontal: 20,
+				},
+				text: {
+					fontSize: 24,
+				},
+			};
+		default: // medium
+			return {
+				button: {
+					height: 46,
+					paddingHorizontal: 16,
+				},
+				text: {
+					fontSize: 22,
+				},
+			};
+	}
+};
+
 type ButtonProps = {
 	title?: string;
 	onPress: () => void;
@@ -64,6 +98,7 @@ type ButtonProps = {
 	hasShadow?: boolean;
 	disabled?: boolean;
 	variant?: "default" | "outline" | "secondary" | "icon";
+	size?: "small" | "medium" | "large";
 	iconName?: FeatherIconName;
 };
 
@@ -76,6 +111,7 @@ const Button = ({
 	hasShadow = false,
 	disabled = false,
 	variant = "default",
+	size = "medium",
 	iconName,
 }: ButtonProps) => {
 	const shadow = {
@@ -90,13 +126,28 @@ const Button = ({
 	};
 
 	const variantStyles = getVariantStyles(variant);
+	const sizeStyles = getSizeStyles(size);
 	const textColor = variantStyles.text.color || theme.colors.white;
+
+	const getIconSize = () => {
+		switch (size) {
+			case "small":
+				return 16;
+			case "large":
+				return 24;
+			default:
+				return 20;
+		}
+	};
+
+	const iconSize = getIconSize();
 
 	if (loading) {
 		return (
 			<View
 				style={[
 					styles.button,
+					sizeStyles.button,
 					variantStyles.button,
 					buttonStyle,
 					{ backgroundColor: "white" },
@@ -113,6 +164,7 @@ const Button = ({
 			enabled={!disabled}
 			style={[
 				styles.button,
+				sizeStyles.button,
 				variantStyles.button,
 				buttonStyle,
 				hasShadow && shadow,
@@ -120,18 +172,29 @@ const Button = ({
 			]}
 		>
 			{variant === "icon" ? (
-				<Feather name={iconName || "circle"} size={20} color={textColor} />
+				<Feather
+					name={iconName || "circle"}
+					size={iconSize}
+					color={textColor}
+				/>
 			) : (
 				<View style={{ flexDirection: "row", alignItems: "center" }}>
 					{iconName && (
 						<Feather
 							name={iconName}
-							size={20}
+							size={iconSize}
 							color={textColor}
 							style={{ marginRight: 8 }}
 						/>
 					)}
-					<Text style={[styles.text, variantStyles.text, textStyle]}>
+					<Text
+						style={[
+							styles.text,
+							sizeStyles.text,
+							variantStyles.text,
+							textStyle,
+						]}
+					>
 						{title}
 					</Text>
 				</View>

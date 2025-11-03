@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { theme } from "@/src/constants/theme";
 import { useRelativeTime } from "@/src/hooks";
 import { useMarkAsRead } from "@/src/queries/notifications";
+import { useGetUser } from "@/src/queries/users";
 import type { TNotificationWithUsers } from "@/src/types";
 import { Avatar } from "../Avatar";
 
@@ -15,6 +16,14 @@ const NotificationDetails = ({ item, onPress }: NotificationDetailsProps) => {
 	const formatRelativeTime = useRelativeTime();
 	const { mutate: markAsRead } = useMarkAsRead();
 
+	const followingId =
+		typeof item.data === "object" &&
+		item.data !== null &&
+		"following_id" in item.data
+			? ((item.data as { following_id?: string }).following_id ?? "")
+			: "";
+	const { data: user } = useGetUser(followingId);
+
 	const getNotificationMessage = (
 		notification: TNotificationWithUsers,
 	): string => {
@@ -23,8 +32,12 @@ const NotificationDetails = ({ item, onPress }: NotificationDetailsProps) => {
 				return "sviđa se tvoja objava";
 			case "comment":
 				return "komentira tvoju objavu";
-			case "follow":
+			case "followed":
 				return "te prati";
+			case "unfollowed":
+				return "te je prestao pratiti";
+			case "you_followed":
+				return "pratiš";
 			default:
 				return "poslao ti obavijest";
 		}
@@ -59,7 +72,10 @@ const NotificationDetails = ({ item, onPress }: NotificationDetailsProps) => {
 			<Avatar path={item.users?.avatar} bucket="avatars" size="sm" />
 			<View style={styles.contentContainer}>
 				<Text style={styles.username}>{item.users?.name}</Text>
-				<Text style={styles.message}>{getNotificationMessage(item)}</Text>
+				<Text style={styles.message}>
+					{getNotificationMessage(item)}{" "}
+					{item.type === "you_followed" && user?.name}
+				</Text>
 				<Text style={styles.timestamp}>
 					{formatRelativeTime(new Date(item.created_at))}
 				</Text>

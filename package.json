@@ -9,7 +9,7 @@
 		"web": "expo start --web",
 		"check": "tsc && biome check",
 		"link": "npx supabase link --project-ref rmfnxxbiyuuckrxhvzhv",
-		"login": "npx supabase login",
+		"login": "npx supabase login --token sbp_4af18c3ce6d71b9f95f6a23e4ea7adf6ec130936",
 		"types": "npx supabase gen types typescript --project-id rmfnxxbiyuuckrxhvzhv > src/types/database.types.ts",
 		"expobuild": "eas build --platform android --profile preview"
 	},
@@ -22,6 +22,7 @@
 		"@shopify/flash-list": "2.0.2",
 		"@supabase/supabase-js": "^2.58.0",
 		"@tanstack/react-query": "^5.90.2",
+		"date-fns": "^4.1.0",
 		"expo": "~54.0.10",
 		"expo-constants": "~18.0.9",
 		"expo-dev-client": "~6.0.15",

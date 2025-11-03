@@ -28,6 +28,13 @@ const ModalsLayout = () => {
 					headerShown: false,
 				}}
 			/>
+			<Stack.Screen
+				name="followed-users/followed"
+				options={{
+					presentation: "modal",
+					animation: "slide_from_bottom",
+				}}
+			/>
 		</Stack>
 	);
 };
